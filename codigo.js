@@ -7,55 +7,60 @@ var totalPedido = 0.00;
 //fecha
 const fechaDeHoy = new Date();
 
-function generarPresupuesto(){
-console.log('CLIENTES');
-console.table(clientes);
+function generarPedidos(){
+    console.log('CLIENTES');
+    console.table(clientes);
 
-let menu1 = parseInt(prompt('Ingresa Opcion Deseada\n1-Filtrar Clientes por Nombre\n2-Buscar Cliente\n3-Mostrar Clientes Con Pedidos\n0-PARA SALIR'));
+    let menu1 = parseInt(prompt('Ingresa Opcion Deseada\n1-Filtrar Clientes por Nombre\n2-Buscar Cliente\n3-Mostrar Clientes Con Pedidos\n4-Mostrar Pedido\n0-PARA SALIR'));
 
-while (menu1 != 0) {
-    switch (menu1) {
-        case 1:
-            //filtrado
-            let opcion = prompt('Ingrese Nombre Cliente a Filtrar: ');
-            filtrarClientes(opcion);
-            break;
-        case 2:
-            //buscar por nombre de cliente
-            let encotreCliente = 0;
-            let nombre = prompt('Ingresa el Nombre del Cliente a Buscar');
-            if (nombre != '') {
-                encotreCliente=buscarCliente(nombre)
-                if (encotreCliente>0){
-                    let menu2 = parseInt(prompt('Cliente Seleccionado\n\nID:'+clienteEncontrado.id+'\nNOMBRE:'+clienteEncontrado.name+'\n\n1-Crear Pedido\n0-PARA SALIR'));
-                    while (menu2 != 0) {
-                        switch (menu2) {
-                            case 1:
-                                // console.log('PRODUCTOS');
-                                // console.table(productos);
-                                crearPedido(encotreCliente);
-                                break;
-                            default:
-                                break;
+    while (menu1 != 0) {
+        switch (menu1) {
+            case 1:
+                //filtrado
+                let opcion = prompt('Ingrese Nombre Cliente a Filtrar: ');
+                filtrarClientes(opcion);
+                break;
+            case 2:
+                //buscar por nombre de cliente
+                let encotreCliente = 0;
+                let nombre = prompt('Ingresa el Nombre del Cliente a Buscar');
+                if (nombre != '') {
+                    encotreCliente=buscarCliente(nombre)
+                    if (encotreCliente>0){
+                        let menu2 = parseInt(prompt('Cliente Seleccionado\n\nID:'+clienteEncontrado.id+'\nNOMBRE:'+clienteEncontrado.name+'\n\n1-Crear Pedido\n0-PARA SALIR'));
+                        while (menu2 != 0) {
+                            switch (menu2) {
+                                case 1:
+                                    // console.log('PRODUCTOS');
+                                    // console.table(productos);
+                                    crearPedido(encotreCliente);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            menu2 = parseInt(prompt('Cliente Seleccionado\n\nID:'+clienteEncontrado.id+'\nNOMBRE:'+clienteEncontrado.name+'\n\n1-Crear Pedido\n0-PARA SALIR'));
                         }
-                        menu2 = parseInt(prompt('Cliente Seleccionado\n\nID:'+clienteEncontrado.id+'\nNOMBRE:'+clienteEncontrado.name+'\n\n1-Crear Pedido\n0-PARA SALIR'));
                     }
+                } else {
+                    alert('No ingreso ningun Nombre')
                 }
-            } else {
-                alert('No ingreso ningun Nombre')
-            }
-            break;
-        case 3:
-            //funcion para contar pedidos realizados
-            clientesConPedidos();
-            break;
-        default:
-            alert('Opcion Incorrecta!');
-            break;
-    }
+                break;
+            case 3:
+                //funcion para filtrar clientes con pedidos realizados
+                clientesConPedidos();
+                break;
+            case 4:
+                //funcion para filtrar un pedido realizado
+                //  filtrarPedido();
+                alert('Opcion no Disponible.');
+                break;
+            default:
+                alert('Opcion Incorrecta!');
+                break;
+        }
 
-    menu1 = parseInt(prompt('Ingresa Opcion Deseada\n1-Filtrar Clientes por Nombre\n2-Buscar Cliente\n3-Mostrar Clientes Con Pedidos\n0-PARA SALIR'));
-}
+        menu1 = parseInt(prompt('Ingresa Opcion Deseada\n1-Filtrar Clientes por Nombre\n2-Buscar Cliente\n3-Mostrar Clientes Con Pedidos\n4-Mostrar Pedido\n0-PARA SALIR'));
+    }
 }
 
 
@@ -84,16 +89,7 @@ function buscarCliente(nombre) {
     }
 }
 
-function buscarPedido(pedido) {
-    let pedidoEncontrado = pedidos.filter(pedidos => pedidos.id == pedido.id);
 
-    if (pedidoEncontrado != undefined) {
-        console.log('Datos del Pedido: '+pedido.id);
-        console.table(pedidoEncontrado);
-    } else {
-        console.log('Pedido no encontrado');
-    }
-}
 
 function buscarProducto(idProducto) {
     productoEncontrado = productos.find(productos => productos.id===idProducto);
@@ -120,7 +116,7 @@ function clientesConPedidos() {
 }
 
 function crearPedido(idCliente) {
-    pedidos = [];
+    const pedido = [];
     totalPedido = 0.00;
     
     let menu1 = parseInt(prompt('Cliente Seleccionado\n\nID: '+clienteEncontrado.id+'\nNOMBRE: '+clienteEncontrado.name+'\n\n1-Buscar Producto\n2-Confirmar Pedido y SALIR\n0-PARA SALIR'));
@@ -137,12 +133,14 @@ function crearPedido(idCliente) {
                     if (encotreProducto>0){
                         let cantidadProducto = parseInt(prompt('Ingresa Cantidad del Producto Seleccionado'));
                         if (cantidadProducto != 0) {
+                            pedido.push({idPedido: nroPedido,idCliente: clienteEncontrado.id,idProducto: productoEncontrado.id,nombreProducto: productoEncontrado.nombre,precioProducto: productoEncontrado.precio,cantidadProducto: cantidadProducto,totalProductos: productoEncontrado.precio*cantidadProducto,fechaPedido: fechaDeHoy});
                             pedidos.push({idPedido: nroPedido,idCliente: clienteEncontrado.id,idProducto: productoEncontrado.id,nombreProducto: productoEncontrado.nombre,precioProducto: productoEncontrado.precio,cantidadProducto: cantidadProducto,totalProductos: productoEncontrado.precio*cantidadProducto,fechaPedido: fechaDeHoy});
+                            
                             console.log('PEDIDO Sin Confirmar');
-                            console.table(pedidos);
+                            console.table(pedido);
 
                             // acumular segun una columna con reduce
-                            totalPedido = pedidos.reduce((prev, curr) => prev + curr.totalProductos, 0);
+                            totalPedido = pedido.reduce((prev, curr) => prev + curr.totalProductos, 0);
 
                             console.log('TOTAL PEDIDO: $ '+totalPedido);
                         } else {
@@ -155,12 +153,13 @@ function crearPedido(idCliente) {
                 break;
             case 2:
                 //Confirmar Pedido y Salir
-                if (pedidos.length > 0) {
+                if (pedido.length > 0) {
                     let indice = clientes.findIndex(index => index.id == clienteEncontrado.id);
                     if (indice >= 0) {
                         nroPedido += 1;
                         clientes[indice].numeroDePedido = nroPedido;
                         clientes[indice].totalPedido = totalPedido;
+                        console.log('PEDIDO CONFIRMADO.');
                     } else {
                         alert('No se pudo obtener el idice del cliente a actualizar.')
                     }
@@ -175,5 +174,23 @@ function crearPedido(idCliente) {
     }
 }
 
+function buscarPedido(idPedido) {
+    let pedidoEncontrado = pedidos.filter(pedidos => pedidos.id == idPedido);
 
+    if(pedidoEncontrado.length > 0){
+        console.log('Datos del Pedido: '+idPedido);
+        console.table(pedidoEncontrado);
+    } else {
+        console.log('Pedido no encontrado');
+    }
+}
+
+function filtrarPedido(){
+    let idPedido = parseInt(prompt('Ingresa Numero de Pedido'));
+    if (idPedido != 0) {
+        buscarPedido(idPedido);
+    } else {
+        alert('No ingreso Numero de Pedido.')
+    }
+}
 
